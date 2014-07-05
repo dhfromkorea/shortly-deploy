@@ -6,6 +6,17 @@ var handler = require('./lib/request-handler');
 
 var app = express();
 
+app.configure('development', function() {
+  app.use(express.errorHandler({
+    dumpExceptions: true,
+    showStack: true
+  }));
+});
+
+app.configure('production', function() {
+  app.use(express.errorHandler());
+});
+
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -15,6 +26,7 @@ app.configure(function() {
   app.use(express.cookieParser('shhhh, very secret'));
   app.use(express.session());
 });
+
 
 app.get('/', util.checkUser, handler.renderIndex);
 app.get('/create', util.checkUser, handler.renderIndex);
