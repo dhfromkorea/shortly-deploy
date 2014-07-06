@@ -6,16 +6,16 @@ var handler = require('./lib/request-handler');
 
 var app = express();
 
-app.configure('development', function() {
-  app.use(express.errorHandler({
-    dumpExceptions: true,
-    showStack: true
-  }));
-});
+// app.configure('development', function() {
+//   app.use(express.errorHandler({
+//     dumpExceptions: true,
+//     showStack: true
+//   }));
+// });
 
-app.configure('production', function() {
-  app.use(express.errorHandler());
-});
+// app.configure('production', function() {
+//   app.use(express.errorHandler());
+// });
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
