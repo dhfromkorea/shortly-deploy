@@ -5,16 +5,12 @@ module.exports = function(grunt) {
     concat: {
       app: {
         src: ['public/client/app.js', 'public/client/link.js', 'public/client/links.js', 'public/client/linkView.js', 'public/client/linksView.js', 'public/client/createLinkView.js', 'public/client/router.js'],
-        dest: 'public/client/mainApp.js',
+        dest: 'public/dist/mainApp.js'
       },
       depd: {
         src: ['public/lib/jquery.js', 'public/lib/underscore.js', 'public/lib/.js', 'public/lib/backbone.js', 'public/lib/handlebars.js'],
-        dest: 'public/lib/mainDepd.js',
-      },
-      dist: {
-        src: ['public/lib/mainDepd.js', 'public/client/mainApp.js'],
-        dest: 'public/dist/main.js',
-      },
+        dest: 'public/dist/mainDepd.js',
+      }
     },
 
     mochaTest: {
@@ -38,16 +34,16 @@ module.exports = function(grunt) {
           mangle: false
         },
         files: {
-          'public/dist/main.min.js': ['public/dist/main.js']
+          'public/dist/mainApp.min.js': ['public/dist/mainApp.js'],
+          'public/dist/mainDepd.min.js': ['public/dist/mainDepd.js']
         }
       }
     },
 
     jshint: {
-      files: [
-        // Add filespec list here
-        // adding
-      ],
+      files: {
+        src: ['public/client/*.js']
+      },
       options: {
         force: 'true',
         jshintrc: '.jshintrc',
@@ -85,8 +81,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        // nodemon server.js?
-        // export_env = production?
+        command: 'git push azure master'
       }
     },
   });
@@ -112,6 +107,7 @@ module.exports = function(grunt) {
 
     grunt.task.run(['watch']);
   });
+ grunt.registerTask('server-prod', ['shell:prodServer']);
 
   ////////////////////////////////////////////////////
   // Main grunt tasks
@@ -121,12 +117,11 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['concat', 'uglify', 'cssmin']);
+  grunt.registerTask('build', ['jshint', 'test', 'concat', 'uglify', 'cssmin']);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
-      // add your production server task here
-
+      grunt.task.run(['server-prod']);
 
     } else {
       grunt.task.run(['server-dev']);
@@ -134,10 +129,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('deploy', [
-    // add your deploy tasks here
-    // use options
-
+    'build', 'upload'
   ]);
-
 
 };
