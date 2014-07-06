@@ -3,6 +3,18 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      app: {
+        src: ['public/client/app.js', 'public/client/link.js', 'public/client/links.js', 'public/client/linkView.js', 'public/client/linksView.js', 'public/client/createLinkView.js', 'public/client/router.js'],
+        dest: 'public/client/mainApp.js',
+      },
+      depd: {
+        src: ['public/lib/jquery.js', 'public/lib/underscore.js', 'public/lib/.js', 'public/lib/backbone.js', 'public/lib/handlebars.js'],
+        dest: 'public/lib/mainDepd.js',
+      },
+      dist: {
+        src: ['public/lib/mainDepd.js', 'public/client/mainApp.js'],
+        dest: 'public/dist/main.js',
+      },
     },
 
     mochaTest: {
@@ -21,11 +33,17 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      target: {
+        files: {
+          'public/dist/main.min.js': ['public/dist/main.js']
+        }
+      }
     },
 
     jshint: {
       files: [
         // Add filespec list here
+        // adding
       ],
       options: {
         force: 'true',
@@ -38,6 +56,11 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      combine: {
+        files: {
+          'public/dist/style.min.css': ['public/style.css']
+        }
+      }
     },
 
     watch: {
@@ -59,6 +82,8 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        // nodemon server.js?
+        // export_env = production?
       }
     },
   });
@@ -72,17 +97,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
 
-  grunt.registerTask('server-dev', function (target) {
+  grunt.registerTask('server-dev', function(target) {
     // Running nodejs in a different process and displaying output on the main console
     var nodemon = grunt.util.spawn({
-         cmd: 'grunt',
-         grunt: true,
-         args: 'nodemon'
+      cmd: 'grunt',
+      grunt: true,
+      args: 'nodemon'
     });
     nodemon.stdout.pipe(process.stdout);
     nodemon.stderr.pipe(process.stderr);
 
-    grunt.task.run([ 'watch' ]);
+    grunt.task.run(['watch']);
   });
 
   ////////////////////////////////////////////////////
@@ -93,19 +118,23 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('build', ['concat','uglify','cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
-    if(grunt.option('prod')) {
+    if (grunt.option('prod')) {
       // add your production server task here
+
+
     } else {
-      grunt.task.run([ 'server-dev' ]);
+      grunt.task.run(['server-dev']);
     }
   });
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    // use options
+
   ]);
 
 
