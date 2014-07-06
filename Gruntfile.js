@@ -34,6 +34,9 @@ module.exports = function(grunt) {
 
     uglify: {
       target: {
+        options: {
+          mangle: false
+        },
         files: {
           'public/dist/main.min.js': ['public/dist/main.js']
         }
@@ -118,8 +121,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['concat','uglify','cssmin'
-  ]);
+  grunt.registerTask('build', ['concat', 'uglify', 'cssmin']);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
